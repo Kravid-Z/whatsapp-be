@@ -5,9 +5,9 @@ import dotenv from "dotenv"
 import listEndpoints from "express-list-endpoints"
 import cookieParser from "cookie-parser"
 
-import usersRoutes from "../src/services/users"
+//import usersRoutes from "../src/services/users"
 
-import { badRequestHandler } from "./errorHandlers"
+//import { badRequestHandler } from "./errorHandlers"
 
 dotenv.config()
 
@@ -23,7 +23,7 @@ server.use(cookieParser())
 
 // ********************* ROUTES  **********************************
 
-server.use("/users", usersRoutes)
+//server.use("/users", usersRoutes)
 
 // ********************* ERROR HANDLERS ***************************
 
