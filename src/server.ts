@@ -23,7 +23,7 @@ server.use(cookieParser())
 
 // ********************* ROUTES  **********************************
 
-server.use("/users", usersRoutes)
+//server.use("/users", usersRoutes)
 
 // ********************* ERROR HANDLERS ***************************
 
