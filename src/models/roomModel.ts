@@ -6,7 +6,7 @@ const { Schema, model } = mongoose
 
 const ModelSchema = new Schema<Room, RoomModel>(
   {
-    users:  [{ type: Schema.Types.ObjectId, ref: "rooms" }] 
+    users:  [{ type: Schema.Types.ObjectId, ref: "User" }] 
   },
   { timestamps: true }
 )

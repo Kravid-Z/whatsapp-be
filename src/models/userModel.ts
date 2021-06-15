@@ -11,6 +11,7 @@ const UserSchema = new Schema<User, UserModel>(
     password: { type: String, required: true },
     userRooms: [{ type: Schema.Types.ObjectId, ref: "rooms" }] ,
     firstName: String,
+    socketId: String,
     lastName: String,
     profilePic: String,
   },
