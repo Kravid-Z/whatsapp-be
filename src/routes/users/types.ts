@@ -15,7 +15,7 @@ export interface Room {
 }
 
 export interface messages{
-  senderId: string
+  senderId: string 
   recieverId: string
   message: string
 }
