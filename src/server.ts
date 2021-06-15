@@ -13,7 +13,7 @@ dotenv.config()
 
 const server = express()
 
-const port = process.env.PORT || 3001
+const PORT = process.env.PORT || 5000
 
 // ********************* MIDDLEWARES ****************************
 
@@ -32,8 +32,15 @@ mongoose.connect(process.env.MONGO_CONNECTION!, { useNewUrlParser: true, useUnif
 mongoose.connection.on("connected", () => {
   console.log("Mongo connection done")
 
-  server.listen(port, () => {
-    console.table(listEndpoints(server))
-    console.log("Server up and running on port: ", port)
+  server.listen(PORT, () => {
+    console.table(listEndpoints(server));
+    console.log(
+      "\u001b[" +
+        35 +
+        "m" +
+        "Server is running on port: " +
+        PORT +
+        "\u001b[0m"
+    );
   })
 })
