@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 
 import { verifyJWT } from "./tools";
-import UserModel from "../services/users/schema";
+import UserModel from "../../models/userModel";
 
 type MiddlewareFunction = (
   req: Request,

@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { TokenPayload } from "./types";
-import { UserDocument } from "../services/users/types";
+import { UserDocument } from "../../routes/users/types";
 
 export const authenticate = async (user: UserDocument) => {
   const accessToken = await generateJWT({ _id: user._id });
