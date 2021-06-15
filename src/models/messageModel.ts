@@ -6,8 +6,8 @@ const { Schema, model } = mongoose
 
 const MessagesSchema = new Schema<messages, messagesModel>(
   {
-    senderId: String,
-    reciveId: String,
+    senderId: { type: Schema.Types.ObjectId, ref: "User" },
+    recieverId: { type: Schema.Types.ObjectId, ref: "User" },
     message: String,
   },
   { timestamps: true }
