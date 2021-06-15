@@ -1,4 +1,4 @@
-import { Document, Model } from "mongoose"
+import { Document, Model, ObjectId } from "mongoose"
 
 export interface User {
   email: string
@@ -6,19 +6,25 @@ export interface User {
   firstName?: string
   lastName?: string
   profilePic?: string
-  githubURL?: string
-  portfolioURL?: string
-  capstoneURL?: string
-  linkedinURL?: string
-  youtubeURL?: string
-  availableToRelocation?: boolean
-  located?: string
-  desiredPosition?: string
-  approved?: boolean
-  hired?: boolean
-  track: string
-  oneLiner?: string
+  userRooms: string[]
+
 }
+export interface Room {
+ users: string[]
+}
+
+export interface messages{
+  senderId: string
+  recieverId: string
+  message: string
+}
+export interface messagesDocument extends messages, Document {}
+
+export interface messagesModel extends Model<messagesDocument> {}
+
+export interface RoomDocument extends Room, Document {}
+
+export interface RoomModel extends Model<RoomDocument> {}
 
 export interface UserDocument extends User, Document {}
 
