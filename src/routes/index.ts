@@ -1,14 +1,11 @@
 import { Router } from "express";
-// import logOutRoute from "./users/logOutRoute";
-// import registerRoute from "./users/registerRoute";
-// import loginAndRefreshRoute from "./users/loginRoute";
 import usersRouter from "./users";
+// import roomsRouter from "../rooms";
 
 const mainRouter: Router = Router();
 
-// mainRouter.use("/register", registerRoute);
-// mainRouter.use("/", loginAndRefreshRoute);
-// mainRouter.use("/", logOutRoute);
-mainRouter.use("/users/me", usersRouter);
+
+mainRouter.use("/users", usersRouter);
+// mainRouter.use("/users", roomsRouter);
 
 export default mainRouter;

@@ -10,10 +10,11 @@ import UserModel from "../../models/userModel";
 import { User } from "./types";
 import { authenticate } from "../../services/Auth/tools";
 import { JWTAuthMiddleware } from "../../services/Auth/";
+dotenv.config();
+
 
 const usersRouter = express.Router();
 
-dotenv.config();
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,

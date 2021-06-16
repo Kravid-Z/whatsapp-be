@@ -19,9 +19,6 @@ export interface messages{
   recieverId: string
   message: string
 }
-export interface messagesDocument extends messages, Document {}
-
-export interface messagesModel extends Model<messagesDocument> {}
 
 export interface RoomDocument extends Room, Document {}
 

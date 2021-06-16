@@ -1,10 +1,9 @@
-
-import { UserDocument } from "../src/services/users/types"
+import { UserDocument } from "../src/routes/users/types";
 
 declare global {
   namespace Express {
     interface Request {
-      user?: UserDocument
+      user?: UserDocument;
     }
   }
 }
