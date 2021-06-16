@@ -12,7 +12,7 @@ const UserSchema = new Schema<User, UserModel>(
     userRooms: [{ type: Schema.Types.ObjectId, ref: "Room" }],
     firstName: String,
     backgroundImgRoom: String,
-    socketId: String,
+    socketID: [{ type: String }],
     lastName: String,
     profilePic: {
       type: String,

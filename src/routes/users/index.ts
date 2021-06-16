@@ -12,9 +12,7 @@ import { authenticate } from "../../services/Auth/tools";
 import { JWTAuthMiddleware } from "../../services/Auth/";
 dotenv.config();
 
-
 const usersRouter = express.Router();
-
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
@@ -41,18 +39,15 @@ usersRouter.get("/", async (req, res, next) => {
   }
 });
 
-usersRouter.post(
-  "/register",
-  async (req: Request<{}, {}, Pick<User, "email" | "password">>, res, next) => {
-    try {
-      const newUser = new UserModel(req.body);
-      const { _id } = await newUser.save();
-      res.status(201).send({ _id });
-    } catch (error) {
-      next(error);
-    }
+usersRouter.post("/register", async (req: Request<{}, {}, Pick<User, "email" | "password">>, res, next) => {
+  try {
+    const newUser = new UserModel(req.body);
+    const { _id } = await newUser.save();
+    res.status(201).send({ _id });
+  } catch (error) {
+    next(error);
   }
-);
+});
 
 usersRouter.get("/me", JWTAuthMiddleware, async (req, res, next) => {
   try {
@@ -61,26 +56,19 @@ usersRouter.get("/me", JWTAuthMiddleware, async (req, res, next) => {
     next(error);
   }
 });
-usersRouter.put(
-  "/me",
-  JWTAuthMiddleware,
-  upload,
-  async (req: Request<{}, {}, User>, res, next) => {
-    try {
-      const updates = Object.keys(req.body) as (keyof User)[];
+usersRouter.put("/me", JWTAuthMiddleware, upload, async (req: Request<{}, {}, User>, res, next) => {
+  try {
+    const updates = Object.keys(req.body) as (keyof User)[];
 
-      updates.forEach(
-        (update) => ((req.user as any)![update] = req.body[update])
-      );
+    updates.forEach((update) => ((req.user as any)![update] = req.body[update]));
 
-      req.user!.profilePic = req.file.path;
-      await req.user!.save();
-      res.send(req.user);
-    } catch (error) {
-      next(error);
-    }
+    req.user!.profilePic = req.file.path;
+    await req.user!.save();
+    res.send(req.user);
+  } catch (error) {
+    next(error);
   }
-);
+});
 usersRouter.delete("/me", JWTAuthMiddleware, async (req, res, next) => {
   try {
     await req.user!.deleteOne();
@@ -90,29 +78,64 @@ usersRouter.delete("/me", JWTAuthMiddleware, async (req, res, next) => {
   }
 });
 
-usersRouter.post(
-  "/login",
-  async (req: Request<{}, {}, Pick<User, "email" | "password">>, res, next) => {
-    try {
-      const { email, password } = req.body;
+usersRouter.get("/me/socketID/:userID/:socketID", async (req, res, next) => {
+  try {
+    const updated = await UserModel.findByIdAndUpdate(
+      req.params.userID,
+      {
+        $push: {
+          socketID: req.params.socketID,
+        },
+      },
+      { runValidators: true, new: true }
+    );
+    res.send({ message: "success", res: updated });
+  } catch (error) {
+    console.log(error);
 
-      const user = await UserModel.checkCredentials(email, password);
-
-      if (user) {
-        const accessToken = await authenticate(user);
-        res.cookie("accessToken", accessToken, {
-          httpOnly: true,
-          secure: process.env.NODE_ENV === "production" ? true : false,
-          sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-        });
-        res.send();
-      } else {
-        next(createError(400, "Wrong credentials"));
-      }
-    } catch (error) {
-      next(error);
-    }
+    next(error);
   }
-);
+});
+
+usersRouter.delete("/me/socketID/:userID/:socketID", async (req, res, next) => {
+  try {
+    const updated = await UserModel.findByIdAndUpdate(
+      req.params.userID,
+      {
+        $pull: {
+          socketID: req.params.socketID,
+        },
+      },
+      { runValidators: true, new: true }
+    );
+    res.send({ message: "success", res: updated });
+  } catch (error) {
+    console.log(error);
+
+    next(error);
+  }
+});
+
+usersRouter.post("/login", async (req: Request<{}, {}, Pick<User, "email" | "password">>, res, next) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await UserModel.checkCredentials(email, password);
+
+    if (user) {
+      const accessToken = await authenticate(user);
+      res.cookie("accessToken", accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production" ? true : false,
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      });
+      res.send();
+    } else {
+      next(createError(400, "Wrong credentials"));
+    }
+  } catch (error) {
+    next(error);
+  }
+});
 
 export default usersRouter;
