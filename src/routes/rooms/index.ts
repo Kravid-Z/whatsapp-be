@@ -33,26 +33,33 @@ dotenv.config();
 const roomsRouter = express.Router();
 
 roomsRouter.post("/", async (req: Request, res: Response, next: NextFunction) => {
-  console.log("post room");
-
+  //create a new room
   try {
-    const newRoom = new RoomModel(req.body);
-    const { _id } = await newRoom.save();
-    req.body.users.map(async (user: string) => {
-      console.log(user);
+    //check if the room is already created
+    const checkIfTheRoomExists = await RoomModel.find({ users: { $all: [req.body.users[0], req.body.users[1]] } });
 
-      const updatedUser = await UserModel.findByIdAndUpdate(
-        user,
-        {
-          $addToSet: { userRooms: _id },
-        },
-        { new: true, runValidators: true }
-      );
-      console.log(updatedUser);
-    });
+    if (checkIfTheRoomExists.length > 0) {
+      res.send({ message: "room already exists", room: checkIfTheRoomExists });
+    } else {
+      const newRoom = new RoomModel(req.body);
+      const { _id } = await newRoom.save();
 
-    //const user1 = UserModel.findOneAndUpdate(req.body.users[0].)
-    res.send(_id);
+      req.body.users.map(async (user: string) => {
+        console.log(user);
+
+        const updatedUser = await UserModel.findByIdAndUpdate(
+          user,
+          {
+            $addToSet: { userRooms: _id },
+          },
+          { new: true, runValidators: true }
+        );
+        console.log(updatedUser);
+      });
+
+      res.send({ message: "new room created", room: _id });
+    }
+    //if there is no existing room
   } catch (error) {
     console.log(error);
 
@@ -61,8 +68,8 @@ roomsRouter.post("/", async (req: Request, res: Response, next: NextFunction) =>
 });
 
 roomsRouter.get("/me/:userID", async (req: Request, res: Response, next: NextFunction) => {
+  //getting all the rooms of the current user
   console.log("user ids");
-
   try {
     const userRooms = await UserModel.findById(req.params.userID, {
       userRooms: 1,
@@ -76,6 +83,7 @@ roomsRouter.get("/me/:userID", async (req: Request, res: Response, next: NextFun
 });
 
 roomsRouter.post("/:roomID", async (req: Request, res: Response, next: NextFunction) => {
+  //post a new message to the room
   try {
     const updated = await RoomModel.findByIdAndUpdate(
       req.params.roomID,
