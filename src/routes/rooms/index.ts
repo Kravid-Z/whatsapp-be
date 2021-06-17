@@ -92,10 +92,21 @@ roomsRouter.get("/me/:userID", async (req: Request, res: Response, next: NextFun
   }
 });
 
-roomsRouter.get("/me/:roomID", async (req: Request, res: Response, next: NextFunction) => {
+roomsRouter.get("/me/room/:roomID", async (req: Request, res: Response, next: NextFunction) => {
   //getting all the rooms of the current user
+  console.log("trying to find a room");
+
   try {
-    const room = await RoomModel.findById(req.params.roomID);
+    const room = await RoomModel.findById(req.params.roomID)
+      .populate("users")
+      .populate({
+        path: "messages",
+        populate: {
+          path: "senderId",
+        },
+      }); //populate users
+    console.log("room: " + room);
+
     res.send(room);
   } catch (error) {
     console.log(error);
