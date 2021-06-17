@@ -49,9 +49,10 @@ usersRouter.post("/register", async (req: Request<{}, {}, Pick<User, "email" | "
   }
 });
 
-usersRouter.get("/me", JWTAuthMiddleware, async (req, res, next) => {
+usersRouter.get("/me/:myID", async (req, res, next) => {
   try {
-    res.send(req.user);
+    const me = await UserModel.findById(req.params.myID);
+    res.send(me);
   } catch (error) {
     next(error);
   }
