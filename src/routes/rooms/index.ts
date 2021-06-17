@@ -75,7 +75,6 @@ roomsRouter.post("/", async (req: Request, res: Response, next: NextFunction) =>
 
 roomsRouter.get("/me/:userID", async (req: Request, res: Response, next: NextFunction) => {
   //getting all the rooms of the current user
-  console.log("user ids");
   try {
     const userRooms = await UserModel.findById(req.params.userID, {
       userRooms: 1,
@@ -87,6 +86,17 @@ roomsRouter.get("/me/:userID", async (req: Request, res: Response, next: NextFun
       },
     });
     res.send(userRooms);
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+});
+
+roomsRouter.get("/me/:roomID", async (req: Request, res: Response, next: NextFunction) => {
+  //getting all the rooms of the current user
+  try {
+    const room = await RoomModel.findById(req.params.roomID);
+    res.send(room);
   } catch (error) {
     console.log(error);
     next(error);
