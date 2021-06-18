@@ -24,7 +24,7 @@ const cloudinaryStorage = new CloudinaryStorage({ cloudinary });
 
 const upload = multer({ storage: cloudinaryStorage }).single("profilePic");
 
-usersRouter.get("/", async (req, res, next) => {
+usersRouter.get("/", JWTAuthMiddleware, async (req, res, next) => {
   try {
     const query = q2m(req.query);
     const total = await UserModel.countDocuments(query.criteria);
@@ -42,6 +42,7 @@ usersRouter.get("/", async (req, res, next) => {
 usersRouter.post("/register", async (req: Request<{}, {}, Pick<User, "email" | "password">>, res, next) => {
   try {
     const newUser = new UserModel(req.body);
+    console.log(req.body)
     const { _id } = await newUser.save();
     res.status(201).send({ _id });
   } catch (error) {
@@ -49,7 +50,7 @@ usersRouter.post("/register", async (req: Request<{}, {}, Pick<User, "email" | "
   }
 });
 
-usersRouter.get("/me/:myID", async (req, res, next) => {
+usersRouter.get("/me/:myID",JWTAuthMiddleware, async (req, res, next) => {
   try {
     const me = await UserModel.findById(req.params.myID);
     res.send(me);
@@ -79,7 +80,7 @@ usersRouter.delete("/me", JWTAuthMiddleware, async (req, res, next) => {
   }
 });
 
-usersRouter.get("/me/socketID/:userID/:socketID", async (req, res, next) => {
+usersRouter.get("/me/socketID/:userID/:socketID", JWTAuthMiddleware, async (req, res, next) => {
   try {
     const updated = await UserModel.findByIdAndUpdate(
       req.params.userID,
@@ -98,7 +99,7 @@ usersRouter.get("/me/socketID/:userID/:socketID", async (req, res, next) => {
   }
 });
 
-usersRouter.delete("/me/socketID/:userID/:socketID", async (req, res, next) => {
+usersRouter.delete("/me/socketID/:userID/:socketID",JWTAuthMiddleware, async (req, res, next) => {
   try {
     const updated = await UserModel.findByIdAndUpdate(
       req.params.userID,
@@ -120,6 +121,7 @@ usersRouter.delete("/me/socketID/:userID/:socketID", async (req, res, next) => {
 usersRouter.post("/login", async (req: Request<{}, {}, Pick<User, "email" | "password">>, res, next) => {
   try {
     const { email, password } = req.body;
+    console.log(req.body)
 
     const user = await UserModel.checkCredentials(email, password);
 
@@ -135,6 +137,7 @@ usersRouter.post("/login", async (req: Request<{}, {}, Pick<User, "email" | "pas
       next(createError(400, "Wrong credentials"));
     }
   } catch (error) {
+    console.log(error)
     next(error);
   }
 });
