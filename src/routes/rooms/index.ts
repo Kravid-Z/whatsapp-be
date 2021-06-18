@@ -15,24 +15,17 @@
 // post whatsapp/me/rooms/:roomId/message
 
 import express, { Request, Response, NextFunction } from "express";
-import q2m from "query-to-mongo";
 import createError from "http-errors";
-import multer from "multer";
-import { CloudinaryStorage } from "multer-storage-cloudinary";
-import { v2 as cloudinary } from "cloudinary";
 import dotenv from "dotenv";
-
 import UserModel from "../../models/userModel";
 import RoomModel from "../../models/roomModel";
 import { Room } from "../users/types";
-import { authenticate } from "../../services/Auth/tools";
 import { JWTAuthMiddleware } from "../../services/Auth/";
-import userModel from "../../models/userModel";
 dotenv.config();
 
 const roomsRouter = express.Router();
 
-roomsRouter.post("/", async (req: Request, res: Response, next: NextFunction) => {
+roomsRouter.post("/", JWTAuthMiddleware, async (req: Request, res: Response, next: NextFunction) => {
   //create a new room
   try {
     //check if the room is already created
@@ -73,7 +66,7 @@ roomsRouter.post("/", async (req: Request, res: Response, next: NextFunction) =>
   }
 });
 
-roomsRouter.get("/me/:userID", async (req: Request, res: Response, next: NextFunction) => {
+roomsRouter.get("/me/:userID", JWTAuthMiddleware, async (req: Request, res: Response, next: NextFunction) => {
   //getting all the rooms of the current user
   try {
     const userRooms = await UserModel.findById(req.params.userID, {
@@ -92,7 +85,7 @@ roomsRouter.get("/me/:userID", async (req: Request, res: Response, next: NextFun
   }
 });
 
-roomsRouter.get("/me/room/:roomID", async (req: Request, res: Response, next: NextFunction) => {
+roomsRouter.get("/me/room/:roomID", JWTAuthMiddleware, async (req: Request, res: Response, next: NextFunction) => {
   //getting all the rooms of the current user
   console.log("trying to find a room");
 
@@ -124,12 +117,12 @@ roomsRouter.get("/me/room/:roomID", async (req: Request, res: Response, next: Ne
     console.log(userRooms);
     res.send(userRooms); 
   } catch (error) {
-    console.log(error);
+    console.log(error);1
     next(error);
   }
 }); */
 
-roomsRouter.post("/message/:roomID", async (req: Request, res: Response, next: NextFunction) => {
+roomsRouter.post("/message/:roomID", JWTAuthMiddleware, async (req: Request, res: Response, next: NextFunction) => {
   //post a new message to the room
   try {
     const updated = await RoomModel.findByIdAndUpdate(
