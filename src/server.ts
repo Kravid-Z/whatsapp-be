@@ -15,11 +15,16 @@ import mainRouter from "./routes";
 
 dotenv.config();
 
+var corsOptions = {
+  origin: true,
+  credentials: true,
+};
+
 const server = express();
 const PORT = process.env.PORT || 4000;
 
 // ********************* MIDDLEWARES ****************************
-server.use(cors());
+server.use(cors(corsOptions));
 server.use(express.json());
 server.use(cookieParser());
 
