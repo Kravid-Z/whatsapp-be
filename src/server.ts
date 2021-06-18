@@ -45,6 +45,8 @@ mongoose.connection.on("connected", () => {
 
   server.listen(PORT, () => {
     console.table(listEndpoints(server));
-    console.log("\u001b[" + 35 + "m" + "Server is running on port: " + PORT + "\u001b[0m");
+    console.log(
+      "\u001b[" + 35 + "m" + "Server is running on port: " + PORT + "\u001b[0m"
+    );
   });
 });
