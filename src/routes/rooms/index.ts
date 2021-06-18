@@ -129,7 +129,7 @@ roomsRouter.get("/me/room/:roomID", async (req: Request, res: Response, next: Ne
   }
 }); */
 
-roomsRouter.post("/:roomID", async (req: Request, res: Response, next: NextFunction) => {
+roomsRouter.post("/message/:roomID", async (req: Request, res: Response, next: NextFunction) => {
   //post a new message to the room
   try {
     const updated = await RoomModel.findByIdAndUpdate(
