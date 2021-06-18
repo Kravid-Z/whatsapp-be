@@ -42,6 +42,7 @@ usersRouter.get("/", JWTAuthMiddleware, async (req, res, next) => {
 usersRouter.post("/register", async (req: Request<{}, {}, Pick<User, "email" | "password">>, res, next) => {
   try {
     const newUser = new UserModel(req.body);
+    console.log(req.body)
     const { _id } = await newUser.save();
     res.status(201).send({ _id });
   } catch (error) {
@@ -120,6 +121,7 @@ usersRouter.delete("/me/socketID/:userID/:socketID",JWTAuthMiddleware, async (re
 usersRouter.post("/login", async (req: Request<{}, {}, Pick<User, "email" | "password">>, res, next) => {
   try {
     const { email, password } = req.body;
+    console.log(req.body)
 
     const user = await UserModel.checkCredentials(email, password);
 
@@ -135,6 +137,7 @@ usersRouter.post("/login", async (req: Request<{}, {}, Pick<User, "email" | "pas
       next(createError(400, "Wrong credentials"));
     }
   } catch (error) {
+    console.log(error)
     next(error);
   }
 });
